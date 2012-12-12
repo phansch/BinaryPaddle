@@ -8,16 +8,19 @@ local paddle_left = Paddle.create(15, height / 2 - 50)
 local paddle_right = Paddle.create(width-30, height / 2 - 50)
 local ball = Ball.create()
 
-function love.load()
-    love.graphics.setFont(love.graphics.newFont(40))
-end
-
 function love.draw()
-   paddle_left:draw()
-   paddle_right:draw()
-   love.graphics.print(paddle_left.score, width/2-50, 50, 0)
-   love.graphics.print(paddle_right.score, width/2+50, 50, 0)
-   ball:draw()
+    paddle_left:draw()
+    paddle_right:draw()
+    ball:draw()
+
+    --Draw score
+    love.graphics.setFont(love.graphics.newFont(40))
+    love.graphics.print(paddle_left.score, width/2-50, 50, 0)
+    love.graphics.print(paddle_right.score, width/2+50, 50, 0)
+
+
+    love.graphics.setFont(love.graphics.newFont(12))
+    love.graphics.print("controls: left up/down - w/s, right up/down - arrow keys, esc - exit # no win conditions!", 20, height-20, 0)
 end
 
 function love.update()
@@ -26,10 +29,6 @@ function love.update()
 end
 
 function checkKeyEvents()
-    if love.keyboard.isDown("f10") then
-        love.graphics.toggleFullscreen()
-        print("toggled fullscreen")
-    end
     if love.keyboard.isDown("escape") then
         love.event.quit()
     end
