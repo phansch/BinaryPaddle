@@ -166,5 +166,5 @@ pip-log.txt
 ## Sublime Text 2
 #################
 
-*.sublime-project
-*.sublime-workspace
+BinaryPaddle.sublime-project
+BinaryPaddle.sublime-workspace
