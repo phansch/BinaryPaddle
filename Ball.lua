@@ -1,19 +1,15 @@
-local Ball = {x, y}
+local Ball = {x, y, xdir, ydir}
 Ball.__index = Ball
 
-local x, y
 local speed = 15
-local xdir = 1
-local ydir = 1
-dt = love.timer.getDelta()
+local dt = love.timer.getDelta()
 
 function Ball.create()
     local ball = {}
     setmetatable(ball, Ball)
-    ball.x = love.graphics.getWidth() / 2
-    ball.y = love.graphics.getHeight() / 2
+    Ball:resetBall()
 
-    -- TODO: set random starting direction
+    math.randomseed(os.time())
     return ball
 end
 
@@ -22,49 +18,56 @@ function Ball:draw()
 end
 
 function Ball:update(paddle_left, paddle_right)
-    self.x = self.x + xdir * dt * speed
-    self.y = self.y + ydir * dt * speed
+    self.x = self.x + self.xdir * dt * speed
+    self.y = self.y + self.ydir * dt * speed
 
     -- ball collides with top or bottom
     if(self.y >= love.graphics.getHeight()) then
-        ydir = -1
+        self.ydir = -1
     end
     if(self.y <= 0) then
-        ydir = 1
+        self.ydir = 1
     end
 
     -- if x < 0 or x > width then ball is out of bounds -> round over
     if(self.x >= love.graphics.getWidth()) then
-        -- round over
+        paddle_left.score = paddle_left.score + 1
+        self:resetBall()
     end
     if(self.x <= 0) then
-        -- round over
+        paddle_right.score = paddle_right.score + 1
+        self:resetBall()
     end
 
     -- check if ball collides with paddle
-    if(checkCollision(self, paddle_left)) then
-        xdir = 1
+    if(self:checkCollision(paddle_left)) then
+        self.xdir = 1
     end
-    if(checkCollision(self, paddle_right)) then
-        xdir = -1
+    if(self:checkCollision(paddle_right)) then
+        self.xdir = -1
     end
-
 end
 
-function checkCollision(ball, paddle)
-    --print(ball.x)
-    local ball_x1, ball_y1 = ball.x, ball.y
-    local paddle_x1, paddle_y1 = paddle.x, paddle.y
+function Ball:resetBall()
+    --reset position
+    self.x = love.graphics.getWidth() / 2
+    self.y = love.graphics.getHeight() / 2
 
+    --set random direction
+    self.xdir = math.random() >= 0.5 and 1 or -1
+    self.ydir = math.random() >= 0.5 and 1 or -1
+end
+
+function Ball:checkCollision(paddle)
     -- Simple bounding box collision check
     -- source: https://love2d.org/wiki/BoundingBox.lua
-    local ball_x2 = ball_x1 + 10
-    local ball_y2 = ball_y1 + 10
-    local paddle_x2 = paddle_x1 + paddle.width
-    local paddle_y2 = paddle_y1 + paddle.height
+    local ball_x2 = self.x + 10
+    local ball_y2 = self.y + 10
+    local paddle_x2 = paddle.x + paddle.width
+    local paddle_y2 = paddle.y + paddle.height
 
-    return ball_x1 < paddle_x2 and ball_x2 > paddle_x1 and
-        ball_y1 < paddle_y2 and ball_y2 > paddle_y1
+    return self.x < paddle_x2 and ball_x2 > paddle.x and
+        self.y < paddle_y2 and ball_y2 > paddle.y
 end
 
 return Ball

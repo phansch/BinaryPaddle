@@ -1,9 +1,10 @@
-local Paddle = {x, y, width, height} -- public interface
+local Paddle = {x, y, width, height, score} -- public interface
 Paddle.__index = Paddle
 
 -- private
-local x, y, width, height
+local x, y, width, height, score
 local speed = 15
+local dt = love.timer.getDelta()
 
 function Paddle.create(x, y)
     local pdl = {}
@@ -12,6 +13,7 @@ function Paddle.create(x, y)
     pdl.y = y
     pdl.width = 20
     pdl.height = 100
+    pdl.score = 0
     return pdl
 end
 
@@ -20,7 +22,7 @@ function Paddle:draw()
 end
 
 function Paddle:update(dir)
-        self.y = self.y + dir * dt * speed
+    self.y = self.y + dir * dt * speed
 end
 
 return Paddle

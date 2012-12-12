@@ -8,9 +8,15 @@ local paddle_left = Paddle.create(15, height / 2 - 50)
 local paddle_right = Paddle.create(width-30, height / 2 - 50)
 local ball = Ball.create()
 
+function love.load()
+    love.graphics.setFont(love.graphics.newFont(40))
+end
+
 function love.draw()
    paddle_left:draw()
    paddle_right:draw()
+   love.graphics.print(paddle_left.score, width/2-50, 50, 0)
+   love.graphics.print(paddle_right.score, width/2+50, 50, 0)
    ball:draw()
 end
 
