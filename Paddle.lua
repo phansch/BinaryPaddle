@@ -22,7 +22,12 @@ function Paddle:draw()
 end
 
 function Paddle:update(dir)
-    self.y = self.y + dir * dt * speed
+    local moveY = self.y + dir * dt * speed
+
+    --bounds checking
+    if(moveY < love.graphics.getHeight()-self.height-5 and moveY > 5) then
+        self.y = moveY
+    end
 end
 
 return Paddle
